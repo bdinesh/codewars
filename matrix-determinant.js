@@ -1,10 +1,10 @@
-const getSubMat = m => {
-    const result = [];
+const getMinor = m => {
+    let result = [];
 
     m[0].forEach((v, n) => {
         let obj = {};
-        obj[`v`] = v;
-        let mm = [];
+        obj['coeff'] = v;
+        let minor = [];
 
         for (let i = 0; i < m.length; i++) {
             let arr = [];
@@ -16,10 +16,10 @@ const getSubMat = m => {
             }
 
             if (arr.length > 0)
-                mm.push(arr);
+                minor.push(arr);
         }
 
-        obj[`m`] = mm;
+        obj['minor'] = minor;
         result.push(obj);
     });
 
@@ -35,23 +35,16 @@ function determinant(m) {
     const values = [];
 
     if (m.length > 2) {
-        const sub = getSubMat(m);
+        const minor = getMinor(m);
 
-        sub.forEach(x => {
-            console.log('coeff', x.v, 'sub', x.m);
-            values.push(x.v * determinant(x.m));
+        minor.forEach(x => {
+            values.push(x.coeff * determinant(x.minor));
         });
 
-        console.log(values);
-
-        for (let i = 0; i < values.length; i++) {
-            if (i % 2 == 0) {
-                result += values[i];
-            }
-            else{
-                result -= values[i];
-            }
-        }
+        result = values.reduce((a,b,i) => {
+            const c = i%2 == 0 ? 1 : -1;
+            return a + b*c;
+        });
     }
 
     return result;
@@ -76,6 +69,6 @@ const m3 = [
     [21, 22, 23, 24, 25]
 ]
 
-//console.log(determinant(m1));
-// console.log(determinant(m2));
+console.log(determinant(m1));
+console.log(determinant(m2));
 console.log(determinant(m3));
